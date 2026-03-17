@@ -6,7 +6,7 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 21:23:13 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/03/11 13:33:03 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/03/17 11:36:47 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,10 @@
 
 struct OutputData
 {
-	std::string	chr;
-	std::string	nbr;
-	std::string	flt;
-	std::string	dbl;
+	char	chr;
+	int		nbr;
+	float	flt;
+	double	dbl;
 };
 
 class ScalarConverter 

@@ -6,99 +6,227 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/11 10:45:50 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/03/11 13:57:01 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/03/17 11:47:03 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ScalarConverter.hpp"
-/* 
-FUNCTION parseChar(input, outputData)
-    // CASE 1: Input is a single character (no quotes)
-    IF input length == 1 THEN
-        outputData.char = input[0]
-        RETURN
-    
-    // CASE 2: Input is a char literal with quotes like 'a'
-    IF input length == 3 AND input[0] == '\'' AND input[2] == '\'' THEN
-        outputData.char = input[1]  // the middle character
-        RETURN
-    
-    // CASE 3: Input is a numeric string (like "42")
-    TRY to convert input to a number
-        value = convert input to double
-        
-        IF conversion failed THEN
-            outputData.char = IMPOSSIBLE
-            RETURN
-            
-        IF value is nan, inf, or outside char range THEN
-            outputData.char = IMPOSSIBLE
-            RETURN
-            
-        // Convert number to char
-        c = cast value to char
-        
-        IF c is printable THEN
-            outputData.char = c
-        ELSE
-            outputData.char = NON_PRINTABLE
-            
-    CATCH conversion error
-        outputData.char = IMPOSSIBLE
-*/
-static void parseChar(std::string& inputData, OutputData* outpData)
+#include <iomanip>
+#include <limits>
+#include <climits>
+#include <cmath>
+
+struct ConvertState
 {
-	if (inputData.length() == 1)
-	{
-		outpData->chr = inputData[0];
-		return ;
-	}
+    bool	valid;
+    bool	charImpossible;
+    bool	charNonDisplayable;
+    bool	intImpossible;
+    bool	floatImpossible;
+    bool	doubleImpossible;
+};
 
-	if (inputData.length() == 3 && inputData[0] == '\'' && inputData[2] == '\'')
-	{
-		outpData->chr = inputData[1];
-		return ;
-	}
-	
-	int value = std::strtod(inputData.c_str(), NULL);
-
-	if (value < 32 || value > 126)
-		outpData->chr = NON_PRINTABLE;
-	else
-		outpData->chr = static_cast<char>(value);
+static bool isNan(double value)
+{
+    return (value != value);
 }
 
-static void parseInt(int inputData, OutputData* outpData)
+static bool isInf(double value)
 {
-	
+    return (value == std::numeric_limits<double>::infinity()
+        || value == -std::numeric_limits<double>::infinity());
 }
 
-static void parseFloat(int inputData, OutputData* outpData)
+static bool isWholeNumber(double value)
 {
-	
+    if (isNan(value) || isInf(value))
+        return (false);
+    return (std::floor(value) == value);
 }
 
-static void parseDouble(int inputData, OutputData* outpData)
+static bool isPseudoLiteral(const std::string& inputData)
 {
-	
+    return (inputData == "nan" || inputData == "nanf"
+        || inputData == "+inf" || inputData == "-inf"
+        || inputData == "inf" || inputData == "+inff"
+        || inputData == "-inff" || inputData == "inff");
 }
 
-static void printData(OutputData* outpData)
+static bool parseToDouble(const std::string& inputData, double& value)
 {
-	std::cout
+    if (inputData.length() == 1
+        && !std::isdigit(static_cast<unsigned char>(inputData[0])))
+    {
+        value = static_cast<double>(inputData[0]);
+        return (true);
+    }
+    if (inputData.length() == 3
+        && inputData[0] == '\'' && inputData[2] == '\'')
+    {
+        value = static_cast<double>(inputData[1]);
+        return (true);
+    }
+    if (isPseudoLiteral(inputData))
+    {
+        std::string normalized = inputData;
+        if (!normalized.empty() && normalized[normalized.length() - 1] == 'f')
+            normalized = normalized.substr(0, normalized.length() - 1);
+        value = std::strtod(normalized.c_str(), NULL);
+        return (true);
+    }
+    char* endPtr = NULL;
+    value = std::strtod(inputData.c_str(), &endPtr);
+    if (endPtr == inputData.c_str())
+        return (false);
+    if (*endPtr == '\0')
+        return (true);
+    if (*endPtr == 'f' && *(endPtr + 1) == '\0')
+        return (true);
+    return (false);
+}
 
+static void parseChar(double inputData, OutputData* outpData, ConvertState* state)
+{
+    if (!state->valid || isNan(inputData) || isInf(inputData)
+        || inputData < 0.0 || inputData > 127.0)
+    {
+        state->charImpossible = true;
+        return ;
+    }
+    outpData->chr = static_cast<char>(inputData);
+    if (!std::isprint(static_cast<unsigned char>(outpData->chr)))
+        state->charNonDisplayable = true;
+}
+
+static void parseInt(double inputData, OutputData* outpData, ConvertState* state)
+{
+    if (!state->valid || isNan(inputData) || isInf(inputData)
+        || inputData < static_cast<double>(INT_MIN)
+        || inputData > static_cast<double>(INT_MAX))
+    {
+        state->intImpossible = true;
+        return ;
+    }
+    outpData->nbr = static_cast<int>(inputData);
+}
+
+static void parseFloat(double inputData, OutputData* outpData, ConvertState* state)
+{
+    if (!state->valid)
+    {
+        state->floatImpossible = true;
+        return ;
+    }
+    outpData->flt = static_cast<float>(inputData);
+}
+
+static void parseDouble(double inputData, OutputData* outpData, ConvertState* state)
+{
+    if (!state->valid)
+    {
+        state->doubleImpossible = true;
+        return ;
+    }
+    outpData->dbl = inputData;
+}
+
+static void printFloatValue(float value)
+{
+    if (isNan(value))
+    {
+        std::cout << "nanf";
+        return ;
+    }
+    if (isInf(value))
+    {
+        if (value < 0)
+            std::cout << "-inff";
+        else
+            std::cout << "+inff";
+        return ;
+    }
+    if (isWholeNumber(value))
+        std::cout << std::fixed << std::setprecision(1) << value << "f";
+    else
+        std::cout << std::setprecision(7) << value << "f";
+}
+
+static void printDoubleValue(double value)
+{
+    if (isNan(value))
+    {
+        std::cout << "nan";
+        return ;
+    }
+    if (isInf(value))
+    {
+        if (value < 0)
+            std::cout << "-inf";
+        else
+            std::cout << "+inf";
+        return ;
+    }
+    if (isWholeNumber(value))
+        std::cout << std::fixed << std::setprecision(1) << value;
+    else
+        std::cout << std::setprecision(15) << value;
+}
+
+static void printData(OutputData* outpData, ConvertState* state)
+{
+    std::ios::fmtflags	oldFlags = std::cout.flags();
+    std::streamsize		oldPrec = std::cout.precision();
+
+    std::cout << "char: ";
+    if (state->charImpossible)
+        std::cout << "impossible";
+    else if (state->charNonDisplayable)
+        std::cout << "Non displayable";
+    else
+        std::cout << "'" << outpData->chr << "'";
+    std::cout << std::endl;
+
+    std::cout << "int: ";
+    if (state->intImpossible)
+        std::cout << "impossible";
+    else
+        std::cout << outpData->nbr;
+    std::cout << std::endl;
+
+    std::cout << "float: ";
+    if (state->floatImpossible)
+        std::cout << "impossible";
+    else
+        printFloatValue(outpData->flt);
+    std::cout << std::endl;
+
+    std::cout << "double: ";
+    if (state->doubleImpossible)
+        std::cout << "impossible";
+    else
+        printDoubleValue(outpData->dbl);
+    std::cout << std::endl;
+
+    std::cout.flags(oldFlags);
+    std::cout.precision(oldPrec);
 }
 
 void ScalarConverter::convert(std::string& baseString)
 {
-	OutputData outpData;
+    OutputData	outpData;
+    ConvertState	state;
+    double		parsedValue;
 
-	
+    state.valid = parseToDouble(baseString, parsedValue);
+    state.charImpossible = false;
+    state.charNonDisplayable = false;
+    state.intImpossible = false;
+    state.floatImpossible = false;
+    state.doubleImpossible = false;
 
-	parseChar(baseString, &outpData);
-	parseInt(inputData, &outpData);
-	parseFloat(inputData, &outpData);
-	parseDouble(inputData, &outpData);
-
-	printData(&outpData);
+    parseChar(parsedValue, &outpData, &state);
+    parseInt(parsedValue, &outpData, &state);
+    parseFloat(parsedValue, &outpData, &state);
+    parseDouble(parsedValue, &outpData, &state);
+    printData(&outpData, &state);
 }
