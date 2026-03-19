@@ -6,7 +6,7 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/17 12:19:59 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/03/17 12:30:15 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/03/19 11:34:13 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,5 @@ class Serializer
 		static  uintptr_t serialize(Data* ptr);
 		static	Data* deserialize(uintptr_t raw);
 };
-
-std::ostream& operator<<(std::ostream out, Serializer& rhs);
-
-
 
 #endif
