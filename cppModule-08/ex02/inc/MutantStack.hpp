@@ -6,7 +6,7 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 14:02:09 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/03/27 16:45:35 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/03/27 17:10:19 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,39 +14,40 @@
 # define MUTANTSTACK_HPP
 
 # include <iostream>
-# include <string>
-# include <stack>
-# include <deque>
+# include <cstdlib>
+# include <iomanip>
+# include <climits>
 # include <exception>
+# include <algorithm>
+# include <vector>
+# include <list>
+# include <stack>
 
-//Container = typename from std::deque that exists inside std::stack (From stack that has deque in it)(debug)
-//c.smt is the protected member from std::stack. (debug)
-template <typename T, typename Container = std::deque<T>>
-class MutantStack : public std::stack<T, Container> {
+# define Red "\033[31m"
+# define Green "\033[32m"
+# define Orange "\033[38;5;208m"
+# define Purple "\e[35m"
+# define Yellow "\033[33m"
+# define Cyan "\033[36m"
+# define Reset "\033[0m"
+
+template <class T>
+class MutantStack : public std::stack<T>
+{
 	public:
-		//ocf
-		MutantStack();
-		MutantStack(const MutantStack& other);
-		MutantStack& operator=(const MutantStack& other);
-		~MutantStack();
+		MutantStack(void);
+		MutantStack(MutantStack const &other);
+		virtual ~MutantStack(void);
+
+		MutantStack&	operator=(MutantStack const &other);
 		
-		//Normal Iterators
-		typename Container::iterator iterator;
-		iterator begin();
-		iterator end();
-		
-		typename Container::const_iterator const_iterator;
-		const_iterator begin() const;
-		const_iterator end() const;
-		
-		//Reverse Iterators
-		typename Container::reverse_iterator reverse_iterator;
-		reverse_iterator rbegin();
-		reverse_iterator rend();
-		
-		typename Container::const_reverse_iterator const_reverse_iterator;
-		const_reverse_iterator rbegin() const;
-		const_reverse_iterator rend() const;
+		typedef typename std::stack<T>::container_type::iterator iterator;
+		iterator	begin(void);
+		iterator	end(void);
+
+		typedef typename std::stack<T>::container_type::reverse_iterator reverse_iterator;
+		reverse_iterator rbegin(void);
+		reverse_iterator rend(void);
 };
 
 # include "MutantStack.tpp"

@@ -6,7 +6,7 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/27 16:02:29 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/03/27 16:46:03 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/03/27 17:07:35 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,40 @@
 
 //Begin ocf
 
-//Def constructor
-template <typename T, typename Container>
-MutantStack<T, Container>::MutantStack() : std::stack<T, Container>() { }
 
-//Copy constructor
-template <typename T, typename Container>
-MutantStack<T, Container>::MutantStack(const MutantStack& other) : std::stack<T, Container>(other) { }
+template <class T>
+MutantStack<T>::MutantStack(void) : std::stack<T>() {}
 
-//Copy assignement operator
-template <typename T, typename Container>
-MutantStack<T, Container>& MutantStack<T, Container>::operator=(const MutantStack& other) {
+template <class T>
+MutantStack<T>::MutantStack(MutantStack const &other) : std::stack<T>(other) {}
+
+template <class T>
+MutantStack<T>::~MutantStack(void) {}
+
+template <class T>
+MutantStack<T>&	MutantStack<T>::operator=(MutantStack const &other) {
 	if (this != &other) {
-		std::stack<T, Container>::operator=(other);
+		std::stack<T>::operator=(other);
 	}
 	return (*this);
-} 
+}
 
-//Def destructor
-template <typename T, typename Container>
-MutantStack<T, Container>::~MutantStack() { }
-
-//End ocf
-
-//Normal iterators begin
-template <typename T, typename Container>
-typename MutantStack<T, Container>::iterator MutantStack<T, Container>::begin() {
+template <class T>
+typename MutantStack<T>::iterator	MutantStack<T>::begin(void) {
 	return (this->c.begin());
+}
+
+template <class T>
+typename MutantStack<T>::iterator	MutantStack<T>::end(void) {
+	return (this->c.end());
+}
+
+template <class T>
+typename MutantStack<T>::reverse_iterator	MutantStack<T>::rbegin(void) {
+	return (this->c.rbegin());
+}
+
+template <class T>
+typename MutantStack<T>::reverse_iterator	MutantStack<T>::rend(void) {
+	return (this->c.rend());
 }
