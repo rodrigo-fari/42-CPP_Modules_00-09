@@ -6,7 +6,7 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/24 23:25:44 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/02/25 00:29:29 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/04/01 15:35:47 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ RobotomyRequestForm::~RobotomyRequestForm()
 
 void RobotomyRequestForm::executeAction() const
 {
+	std::srand(std::time(NULL));
 	std::cout << "* drilling noises *" << std::endl;
 	if (std::rand() % 2)
 		std::cout << this->target << " has been robotomized successfully." << std::endl;

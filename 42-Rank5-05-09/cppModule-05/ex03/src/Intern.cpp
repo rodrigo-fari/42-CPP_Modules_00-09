@@ -6,7 +6,7 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/26 21:06:06 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/02/26 21:12:07 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/04/01 15:32:57 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ const char* Intern::NoFormException::what() const throw()
 
 AForm* Intern::makeForm(std::string formName, std::string target) {
 
-	std::string forms[3] = {"shrubbery creation", "robotomy request", "presidential pardon"};	
+	std::string forms[3] = {"presidential pardon", "shrubbery creation", "robotomy request"};	
 
 	for(int i = 0; i < 3; i++)
 	{

@@ -6,7 +6,7 @@
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/24 01:43:11 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/02/24 23:15:25 by rde-fari         ###   ########.fr       */
+/*   Updated: 2026/04/01 15:15:30 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ public:
 };
 
 // Operator overload
-
 std::ostream &operator<<(std::ostream &out, const Bureaucrat &bureaucrat);
 
 #endif
