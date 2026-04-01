@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Base.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/26 21:18:50 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/04/01 16:18:15 by rde-fari         ###   ########.fr       */
+/*   Created: 2026/03/19 13:57:16 by rde-fari          #+#    #+#             */
+/*   Updated: 2026/03/19 14:36:03 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ScalarConverter.hpp"
+#ifndef BASE_HPP
+# define BASE_HPP
 
-int main(int ac, char **av)
+#include <iostream>
+#include <string>
+#include <cstdlib>
+
+class Base
 {
-	if (ac != 2)
-		return ((std::cerr << "[ERROR: Invalid usage.]\nUsage: ./ex00 [arg].\n"), 1);
-	std::string inputData = av[1];
-	ScalarConverter::convert(inputData);
-}
+	public:
+		virtual ~Base();
+};
+
+Base* generate(void);
+void identify(Base* p);
+void identify(Base& p);
+
+#endif

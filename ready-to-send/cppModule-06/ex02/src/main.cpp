@@ -5,17 +5,31 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rde-fari <rde-fari@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/26 21:18:50 by rde-fari          #+#    #+#             */
-/*   Updated: 2026/04/01 16:18:15 by rde-fari         ###   ########.fr       */
+/*   Created: 2026/03/19 13:55:52 by rde-fari          #+#    #+#             */
+/*   Updated: 2026/03/19 14:45:28 by rde-fari         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ScalarConverter.hpp"
+#include "Base.hpp"
+#include "A.hpp"
+#include "B.hpp"
+#include "C.hpp"
 
-int main(int ac, char **av)
+int main (void)
 {
-	if (ac != 2)
-		return ((std::cerr << "[ERROR: Invalid usage.]\nUsage: ./ex00 [arg].\n"), 1);
-	std::string inputData = av[1];
-	ScalarConverter::convert(inputData);
+	Base *base;
+	Base *nulPtr = 0;
+	base = generate();
+
+	std::cout << "== Identify Base With Pointer Paramater ==\n" << std::endl;
+	identify(base);
+	std::endl(std::cout);
+	std::cout << "== Identify Base With Reference Paramater ==\n" << std::endl;
+	identify(*base);
+	std::endl(std::cout);
+	std::cout << "== Identify Base With Null Pointer Paramater ==\n" << std::endl;
+	identify(nulPtr);
+
+	delete (base);
+	delete (nulPtr);
 }
